@@ -13,16 +13,14 @@ class OnBoardingScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: IntroductionScreen(
           pages: getPages(context),
-          onDone: () {
-            Navigator.pushNamed(context, '/login');
-          },
+          onDone: () {},
           onSkip: () {},
           showSkipButton: false,
           showNextButton: true,
           showBackButton: true,
           showDoneButton: false,
-          next: const Icon(Icons.arrow_forward),
-          back: const Icon(Icons.arrow_back),
+          next: const Text('Next', style: TextStyle(color: kPrimaryColor)),
+          back: const Text('Back', style: TextStyle(color: kPrimaryColor)),
           curve: Curves.fastLinearToSlowEaseIn,
           controlsMargin: const EdgeInsets.all(16),
           controlsPadding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),

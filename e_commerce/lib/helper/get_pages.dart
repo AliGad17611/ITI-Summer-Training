@@ -25,7 +25,7 @@ List<PageViewModel> getPages(BuildContext context) {
         child: CustomButton(
           title: "Get Started",
           onPressed: () {
-            Navigator.pushNamed(context, '/login');
+            Navigator.pushReplacementNamed(context, '/login');
           },
         ),
       ),

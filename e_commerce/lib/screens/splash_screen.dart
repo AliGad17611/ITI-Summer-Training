@@ -1,4 +1,5 @@
 import 'package:e_commerce/constants.dart';
+import 'package:e_commerce/helper/shared_prefrence.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,9 +13,20 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      Navigator.pushNamed(context, '/onBoarding');
-    });
+    _navigateToNextScreen();
+  }
+
+  Future<void> _navigateToNextScreen() async {
+    final userId = await getUserId();
+    if (userId == null) {
+      await Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushReplacementNamed(context, '/onBoarding');
+      });
+    } else {
+      await Future.delayed(const Duration(seconds: 3), () {
+        Navigator.pushReplacementNamed(context, '/nav_bar');
+      });
+    }
   }
 
   @override

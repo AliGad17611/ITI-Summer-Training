@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'package:e_commerce/constants.dart';
+import 'package:e_commerce/helper/show_snackbar.dart';
+import 'package:e_commerce/services/signin_service.dart';
 import 'package:e_commerce/widgets/custom_button.dart';
 import 'package:e_commerce/widgets/custom_email_field.dart';
-import 'package:e_commerce/widgets/custom_pasword_field.dart';
+import 'package:e_commerce/widgets/custom_password_field.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -12,95 +15,128 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final FirebaseAuthService _authService = FirebaseAuthService();
   bool isObscure = true;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      log(MediaQuery.of(context).size.height.toString());
+    });
+  }
+
+  Future<void> _login() async {
+    if (formKey.currentState!.validate()) {
+      try {
+        await _authService.loginUser(
+          emailAddress: emailController.text,
+          password: passwordController.text,
+          context: context,
+        );
+        showSnackBar(context, 'Login Successful');
+        // Navigate to the home screen or other screens after successful login
+        Navigator.pushReplacementNamed(context, '/nav_bar');
+      } catch (e) {
+        showSnackBar(context, e.toString());
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Expanded(
-            child: Form(
-          key: formKey,
+        child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Login',
-                style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: kPrimaryColor),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.0802,
               ),
-              const SizedBox(
-                height: 30,
+              SafeArea(
+                child: Image.asset('assets/images/freed.png'),
               ),
-              CustomEmailField(emailController: emailController),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomPasswordField(passwordController: passwordController),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'forget_password_view');
-                    },
-                    child: const Text(
-                      'Forget Password?',
-                      style: TextStyle(
-                          color: kPrimaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
+              Container(
+                margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.0375,
+                ),
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomEmailField(emailController: emailController),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.015,
+                      ),
+                      CustomPasswordField(
+                          passwordController: passwordController),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.005,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              // Navigator.pushNamed(context, '/forget');
+                            },
+                            child: const Text(
+                              'Forget Password?',
+                              style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.028,
+                      ),
+                      CustomButton(
+                        onPressed: _login,
+                        title: 'Login',
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.018,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Don\'t have an account?',
+                            style:
+                                TextStyle(color: Colors.black54, fontSize: 17),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/register');
+                            },
+                            child: const Text(
+                              'Register Now',
+                              style: TextStyle(
+                                  color: kPrimaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              CustomButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    print(emailController.text);
-                    print(passwordController.text);
-                    // Navigator.pushNamed(context, 'home_view');
-                  }
-                },
-                title: 'Login',
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Don\'t have an account?'),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, 'register_view');
-                    },
-                    child: const Text(
-                      'Register Now',
-                      style: TextStyle(
-                          color: kPrimaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
-        )),
+        ),
       ),
     );
   }
 }
+ 

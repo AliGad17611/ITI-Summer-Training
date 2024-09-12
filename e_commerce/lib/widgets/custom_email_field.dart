@@ -1,17 +1,20 @@
+
 import 'package:flutter/material.dart';
 
 class CustomEmailField extends StatelessWidget {
   const CustomEmailField({
     super.key,
-    required this.emailController,
+    required this.emailController,this.enabled =true,
   });
 
   final TextEditingController emailController;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: emailController,
+      enabled: enabled,
       validator: (value) {
         final bool emailValid = RegExp(
                 r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
